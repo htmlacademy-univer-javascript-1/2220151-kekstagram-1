@@ -18,3 +18,7 @@ function checkRange(from, to) {
     throw new RangeError('Invalid Range');
   }
 }
+
+
+getRandomBetween(0,42);
+isNoLongerThan('keks', 4);
