@@ -20,5 +20,5 @@ function checkRange(from, to) {
 }
 
 
-getRandomBetween(0,42);
+getRandomBetween(0, 42);
 isNoLongerThan('keks', 4);
