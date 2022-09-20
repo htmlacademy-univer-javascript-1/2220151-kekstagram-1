@@ -14,7 +14,7 @@ function getIntRange(from, to) {
 }
 
 function checkRange(from, to) {
-  if (from > to) {
+  if (from > to || from < 0) {
     throw new RangeError('Invalid Range');
   }
 }
