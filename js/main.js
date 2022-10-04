@@ -87,10 +87,10 @@ function createCommentMessage() {
   return createMessageFrom(getRandomBetween(0, 1) ? POSITIVE_COMMENTS : NEGATIVE_COMMENTS);
 }
 
-function createMessageFrom(COMMENT_POOL) {
-  const lineCount = Math.min(getRandomBetween(1, 2), COMMENT_POOL.length);
+function createMessageFrom(commentPool) {
+  const lineCount = Math.min(getRandomBetween(1, 2), commentPool.length);
 
-  return shuffle(COMMENT_POOL).slice(0, lineCount).join(' ');
+  return shuffle(commentPool).slice(0, lineCount).join(' ');
 }
 
 function shuffle(array) {
