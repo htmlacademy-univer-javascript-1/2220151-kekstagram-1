@@ -40,14 +40,15 @@ function getRandomBetween(from, to) {
 
 function getPosts() {
   const [ids, imgs, commentIds] = getRandomRanges();
+
   return createPosts(ids, imgs, commentIds);
 }
 
 function getRandomRanges() {
   return [
-    shuffle(getRange(1, POST_COUNT)),
-    shuffle(getRange(1, POST_COUNT)),
-    shuffle(getRange(1, POST_COUNT * MAX_COMMENTS))
+    shuffle(getRange(1, POST_COUNT)), // id indecies
+    shuffle(getRange(1, POST_COUNT)), // img url indecies
+    shuffle(getRange(1, POST_COUNT * MAX_COMMENTS)) // comment id indecies
   ];
 }
 
@@ -83,11 +84,7 @@ function createComment(commentIds, index) {
 }
 
 function createCommentMessage() {
-  if (getRandomBetween(0, 1)) {
-    return createMessageFrom(POSITIVE_COMMENTS);
-  } else {
-    return createMessageFrom(NEGATIVE_COMMENTS);
-  }
+  return createMessageFrom(getRandomBetween(0, 1) ? POSITIVE_COMMENTS : NEGATIVE_COMMENTS);
 }
 
 function createMessageFrom(COMMENT_POOL) {
