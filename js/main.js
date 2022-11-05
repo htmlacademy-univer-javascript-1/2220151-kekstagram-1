@@ -1,6 +1,13 @@
-// eslint-disable-next-line no-unused-vars
 import {getPosts} from './data.js';
-import {showPreviews} from './photos/previews.js';
+import {Gallery} from './photos/gallery.js';
 
 
-showPreviews(getPosts());
+const main = () => {
+  const posts = getPosts();
+  const gallery = new Gallery(posts);
+  gallery.show().addEventListeners();
+  return 0;
+};
+
+
+main();
