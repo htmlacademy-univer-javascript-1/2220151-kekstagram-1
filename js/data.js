@@ -68,7 +68,7 @@ const createCommentMessage = () => createMessageFrom(getRandomBetween(0, 1) ? PO
  */
 const createComment = (commentIds, index) => ({
   id: commentIds[index],
-  avatar: `img/avatar-${getRandomBetween(1, 6)}`,
+  avatar: `img/avatar-${getRandomBetween(1, 6)}.svg`,
   message: createCommentMessage(),
   name: getRandomItem(NAMES)
 });

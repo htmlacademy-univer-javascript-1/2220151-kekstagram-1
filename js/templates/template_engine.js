@@ -16,7 +16,7 @@ class TemplateEngine {
    * @param {object} data объект с данными для подставления
    * @returns {String} HTML-строка с подставленными значениями
    */
-  compile(data) {
+  withInserted(data) {
     const curlyBracesRe = /{{(.+)}}/g;
     return this.template.replace(curlyBracesRe, this._replaceMatch(data));
   }
