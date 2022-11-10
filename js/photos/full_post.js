@@ -8,41 +8,63 @@ class FullPost {
   constructor(posts) {
     this._setDomFields();
     this.posts = posts;
+
+    this.onClose = this.onClose.bind(this);
   }
 
   /**
-   * Обработчик события нажатия на миниатюру поста ~и прячет нужные элементы~
-   * @param {*} evt Объект события
-   * @param {*} indexById Словарь для получения индекса поста в `posts` по id нажатой миниатюры
+   * Вставляет данные о посте в соответствующие элементы
+   * @param {object} post Пост для отображения
    */
-  onPreviewClick(evt, indexById) {
-    this.toHide.forEach((e) => e.classList.add('hidden'));
-
-    const postId = Number(evt.target.parentElement.dataset.postId);
-    const post = this.posts[indexById[postId]];
-
-    this._setData(post);
-
-    this.element.classList.remove('hidden');
-    document.body.classList.add('modal-open');
+  setData(post) {
+    this.img.src = post.url;
+    this.likes.textContent = post.likes;
+    this.commentsCount.textContent = post.comments.length;
+    this.comments.innerHTML = createCommentsHtml(post);
+    this.caption.textContent = post.description;
   }
 
   /**
    * Обработчик события закрытия полноразмерного отображения
-   * @param {*} evt Объект события
+   * @param {Event} evt Объект события
    */
   onClose(evt) {
     if (evt.target.id === 'picture-cancel' || evt.key === 'Escape') {
       this.element.classList.add('hidden');
       document.body.classList.remove('modal-open');
+
+      this.removeCloseEventListener();
     }
   }
 
   /**
-   * Добавляет обработчик закрытия для кнопки закрытия
+   * Добавляет обработчик закрытия поста (крестик и Escape)
    */
-  addCloseBtnEventListener() {
-    this.closeBtn.onclick = this.onClose.bind(this);
+  addCloseEventListeners() {
+    this.closeBtn.addEventListener('click', this.onClose);
+    document.addEventListener('keydown', this.onClose);
+  }
+
+  /**
+   * Удаляет обработчик закрытия поста (крестик и Escape)
+   */
+  removeCloseEventListener() {
+    this.closeBtn.removeEventListener('click', this.onClose);
+    document.removeEventListener('keydown', this.onClose);
+  }
+
+  /**
+   * ~Прячет необходимые элементы~
+   */
+  hideElements() {
+    this.toHide.forEach((e) => e.classList.add('hidden'));
+  }
+
+  /**
+   * Отрисовывает пост в полноразмерном отображении
+   */
+  show() {
+    this.element.classList.remove('hidden');
   }
 
 
@@ -66,17 +88,7 @@ class FullPost {
     ];
   }
 
-  /**
-   * Вставляет данные о посте в соответствующие элементы
-   * @param {object} post Пост для отображения
-   */
-  _setData(post) {
-    this.img.src = post.url;
-    this.likes.textContent = post.likes;
-    this.commentsCount.textContent = post.comments.length;
-    this.comments.innerHTML = createCommentsHtml(post);
-    this.caption.textContent = post.description;
-  }
+
 }
 
 

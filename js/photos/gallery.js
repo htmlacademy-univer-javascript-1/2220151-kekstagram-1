@@ -1,4 +1,4 @@
-import {PreviewGallery} from './previews.js';
+import {PreviewsGallery} from './previews_gallery.js';
 import {FullPost} from './full_post.js';
 
 
@@ -8,7 +8,8 @@ import {FullPost} from './full_post.js';
 class Gallery {
   constructor(posts) {
     this.posts = posts;
-    this.previewGallery = new PreviewGallery(posts);
+    this.previewGallery = new PreviewsGallery(posts);
+    this.previewGallery.setPostIndecies();
     this.fullPost = new FullPost(posts);
   }
 
@@ -17,7 +18,7 @@ class Gallery {
    * @return {Gallery} `this`
    */
   show() {
-    this.previewGallery.addPreviewsToPage();
+    this.previewGallery.show();
     return this;
   }
 
@@ -26,10 +27,24 @@ class Gallery {
    * @return {Gallery} `this`
    */
   addEventListeners() {
-    this.previewGallery.addEventListeners(this.fullPost.onPreviewClick, this.fullPost);
-    this.fullPost.addCloseBtnEventListener();
-    window.addEventListener('keydown', this.fullPost.onClose.bind(this.fullPost));
+    this.previewGallery.setOnClick(this.onPreviewClick.bind(this));
+    this.previewGallery.addEventListeners();
     return this;
+  }
+
+  /**
+   * Обработчик события нажатия на миниатюру поста ~и прячет нужные элементы~
+   * @param {object} post Пост
+   */
+  onPreviewClick(post) {
+    this.fullPost.hideElements();
+
+    this.fullPost.setData(post);
+
+    this.fullPost.show();
+    document.body.classList.add('modal-open');
+
+    this.fullPost.addCloseEventListeners();
   }
 }
 

@@ -1,4 +1,4 @@
-import {TemplateEngine} from './template_engine.js';
+import {Template} from './template.js';
 
 
 const PREVIEW = `
@@ -9,7 +9,7 @@ const PREVIEW = `
     <span class="picture__likes">{{likes}}</span>
   </p>
 </a>`;
-const previewTemplate = new TemplateEngine(PREVIEW);
+const previewTemplate = new Template(PREVIEW);
 
 
 export {previewTemplate};

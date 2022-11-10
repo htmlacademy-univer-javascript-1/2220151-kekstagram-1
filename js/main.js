@@ -6,7 +6,6 @@ const main = () => {
   const posts = getPosts();
   const gallery = new Gallery(posts);
   gallery.show().addEventListeners();
-  return 0;
 };
 
 
