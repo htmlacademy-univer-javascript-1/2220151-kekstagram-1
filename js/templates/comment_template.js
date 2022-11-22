@@ -1,4 +1,4 @@
-import {TemplateEngine} from './template_engine.js';
+import {Template} from './template.js';
 
 
 const COMMENT = `
@@ -10,7 +10,7 @@ const COMMENT = `
         width="35" height="35">
     <p class="social__text">{{message}}</p>
 </li>`;
-const commentTemplate = new TemplateEngine(COMMENT);
+const commentTemplate = new Template(COMMENT);
 
 
 export {commentTemplate};

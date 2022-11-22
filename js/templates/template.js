@@ -3,7 +3,7 @@
  * с параметрами, обернутыми в `{{фигурные скобки}}`. Сложный параметр разделяется
  * точкой `{{object.property}}`.
  */
-class TemplateEngine {
+class Template {
   /**
    * @param {String} template Строка-шаблон
    */
@@ -40,4 +40,4 @@ class TemplateEngine {
   }
 }
 
-export {TemplateEngine};
+export {Template};

@@ -62,5 +62,12 @@ const getRange = (from, to) => Array.from({length: to - from + 1}, (_, num) => n
  */
 const getRandomItem = (pool) => pool[getRandomBetween(0, pool.length - 1)];
 
+/**
+ * Проверяет событие на факт нажатия на клавижу Escape
+ * @param {Event} evt Объект события
+ * @returns {Boolean} Событие является нажатием на клавишу Enter
+ */
+const isEscape = (evt) => evt.key === 'Escape';
 
-export {getRandomBetween, getShuffled, isNoLongerThan, getRange, getRandomItem};
+
+export {getRandomBetween, getShuffled, isNoLongerThan, getRange, getRandomItem, isEscape};
