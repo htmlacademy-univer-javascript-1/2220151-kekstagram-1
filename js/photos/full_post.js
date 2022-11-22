@@ -1,4 +1,5 @@
 import {createCommentsHtml} from './comments.js';
+import {isEscape} from '../util.js';
 
 
 /**
@@ -8,8 +9,10 @@ class FullPost {
   constructor(posts) {
     this._setDomFields();
     this.posts = posts;
+    this.loadedCommentsCount = 0;
 
     this.onClose = this.onClose.bind(this);
+    this.loadMoreComments = this.loadMoreComments.bind(this);
   }
 
   /**
@@ -17,11 +20,46 @@ class FullPost {
    * @param {object} post Пост для отображения
    */
   setData(post) {
-    this.img.src = post.url;
-    this.likes.textContent = post.likes;
-    this.commentsCount.textContent = post.comments.length;
-    this.comments.innerHTML = createCommentsHtml(post);
-    this.caption.textContent = post.description;
+    this.activePost = post;
+    this.activeCommentsTotalCount = post.comments.length;
+    this.loadedCommentsCount = 0;
+
+    this.showLoadedCommentsCount();
+    this.tryHideLoadMore();
+    this.elements.img.src = post.url;
+    this.elements.likes.textContent = post.likes;
+    this.elements.commentsCount.textContent = post.comments.length;
+    this.elements.comments.innerHTML = '';
+    this.elements.caption.textContent = post.description;
+  }
+
+  showLoadedCommentsCount() {
+    this.elements.loadedCommentsCount.nodeValue = `${this.loadedCommentsCount} из `;
+  }
+
+  getCommentsFromTo(start, finish) {
+    return this.activePost.comments.slice(start, finish);
+  }
+
+  loadMoreComments() {
+    const start = this.loadedCommentsCount;
+
+    this.loadedCommentsCount = Math.min(
+      this.loadedCommentsCount + 5,
+      this.activeCommentsTotalCount);
+
+    this.elements.comments.innerHTML += createCommentsHtml(this.getCommentsFromTo(start, this.loadedCommentsCount));
+    this.tryHideLoadMore();
+
+    this.showLoadedCommentsCount();
+  }
+
+  tryHideLoadMore() {
+    if (this.loadedCommentsCount === this.activeCommentsTotalCount){
+      this.elements.commentsloader.classList.add('hidden');
+    } else {
+      this.elements.commentsloader.classList.remove('hidden');
+    }
   }
 
   /**
@@ -29,7 +67,7 @@ class FullPost {
    * @param {Event} evt Объект события
    */
   onClose(evt) {
-    if (evt.target.id === 'picture-cancel' || evt.key === 'Escape') {
+    if (evt.target.id === 'picture-cancel' || isEscape(evt)) {
       this.element.classList.add('hidden');
       document.body.classList.remove('modal-open');
 
@@ -37,11 +75,19 @@ class FullPost {
     }
   }
 
+  addCommentLoaderEvent() {
+    this.elements.commentsloader.addEventListener('click', this.loadMoreComments);
+  }
+
+  removeCommentLoaderEvent() {
+    this.elements.commentsloader.removeEventListener('click', this.loadMoreComments);
+  }
+
   /**
    * Добавляет обработчик закрытия поста (крестик и Escape)
    */
   addCloseEventListeners() {
-    this.closeBtn.addEventListener('click', this.onClose);
+    this.elements.closeBtn.addEventListener('click', this.onClose);
     document.addEventListener('keydown', this.onClose);
   }
 
@@ -49,15 +95,8 @@ class FullPost {
    * Удаляет обработчик закрытия поста (крестик и Escape)
    */
   removeCloseEventListener() {
-    this.closeBtn.removeEventListener('click', this.onClose);
+    this.elements.closeBtn.removeEventListener('click', this.onClose);
     document.removeEventListener('keydown', this.onClose);
-  }
-
-  /**
-   * ~Прячет необходимые элементы~
-   */
-  hideElements() {
-    this.toHide.forEach((e) => e.classList.add('hidden'));
   }
 
   /**
@@ -75,17 +114,16 @@ class FullPost {
     const bigPicture = document.querySelector('.big-picture');
     this.element = bigPicture;
 
-    this.img = bigPicture.querySelector('.big-picture__img img');
-    this.likes = bigPicture.querySelector('.likes-count');
-    this.commentsCount = bigPicture.querySelector('.comments-count');
-    this.comments = bigPicture.querySelector('.social__comments');
-    this.caption = bigPicture.querySelector('.social__caption');
-    this.closeBtn = bigPicture.querySelector('#picture-cancel');
-
-    this.toHide = [
-      bigPicture.querySelector('.social__comment-count'),
-      bigPicture.querySelector('.comments-loader')
-    ];
+    this.elements = {
+      img: bigPicture.querySelector('.big-picture__img img'),
+      likes: bigPicture.querySelector('.likes-count'),
+      commentsCount: bigPicture.querySelector('.comments-count'),
+      comments: bigPicture.querySelector('.social__comments'),
+      caption: bigPicture.querySelector('.social__caption'),
+      closeBtn: bigPicture.querySelector('#picture-cancel'),
+      loadedCommentsCount: bigPicture.querySelector('.social__comment-count').childNodes[0],
+      commentsloader: bigPicture.querySelector('.comments-loader')
+    };
   }
 }
 

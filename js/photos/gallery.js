@@ -37,13 +37,12 @@ class Gallery {
    * @param {object} post Пост
    */
   onPreviewClick(post) {
-    this.fullPost.hideElements();
-
     this.fullPost.setData(post);
 
     this.fullPost.show();
     document.body.classList.add('modal-open');
 
+    this.fullPost.addCommentLoaderEvent();
     this.fullPost.addCloseEventListeners();
   }
 }

@@ -6,9 +6,9 @@ import {commentTemplate} from '../templates/comment_template.js';
  * @param {object} post Объект поста
  * @returns HTML-строка списка комментариев без `<ul></ul>`
  */
-const createCommentsHtml = (post) => {
+const createCommentsHtml = (comments) => {
   let html = '';
-  for (const comment of post.comments) {
+  for (const comment of comments) {
     html += commentTemplate.withInserted(comment);
   }
   return html;

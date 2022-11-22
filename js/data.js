@@ -5,7 +5,7 @@ const POST_COUNT = 25;
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
 
-const MAX_COMMENTS = 5;
+const MAX_COMMENTS = 20;
 const POSITIVE_COMMENTS = ['Всё отлично!'];
 const NEGATIVE_COMMENTS = [
   'В целом всё неплохо. Но не всё.',
