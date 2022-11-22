@@ -33,14 +33,26 @@ class FullPost {
     this.elements.caption.textContent = post.description;
   }
 
+  /**
+   * Показывает счетчик загруженных комментариев
+   */
   showLoadedCommentsCount() {
     this.elements.loadedCommentsCount.nodeValue = `${this.loadedCommentsCount} из `;
   }
 
+  /**
+   * Возвращает комментарии от start до finish
+   * @param {Number} start Стартовый индекс отображения
+   * @param {Number} finish Конечный индекс отображения
+   * @returns {object[]} Массив комментариев
+   */
   getCommentsFromTo(start, finish) {
     return this.activePost.comments.slice(start, finish);
   }
 
+  /**
+   * Загружает дополнительные комментарии и обновляет счетчик
+   */
   loadMoreComments() {
     const start = this.loadedCommentsCount;
 
@@ -54,6 +66,9 @@ class FullPost {
     this.showLoadedCommentsCount();
   }
 
+  /**
+   * Скрывает кнопку загрузки комментариев при достижении конца списка комментариев
+   */
   tryHideLoadMore() {
     if (this.loadedCommentsCount === this.activeCommentsTotalCount){
       this.elements.commentsloader.classList.add('hidden');
@@ -76,10 +91,16 @@ class FullPost {
     }
   }
 
+  /**
+   * Добавляет обработчик нажатия на кнопку загрузки комментариев
+   */
   addCommentLoaderEventListener() {
     this.elements.commentsloader.addEventListener('click', this.loadMoreComments);
   }
 
+  /**
+   * Удаляет обработчик нажатия на кнопку загрузки комментариев
+   */
   removeCommentLoaderEventListener() {
     this.elements.commentsloader.removeEventListener('click', this.loadMoreComments);
   }
