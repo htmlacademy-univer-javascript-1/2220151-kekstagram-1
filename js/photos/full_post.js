@@ -71,9 +71,9 @@ class FullPost {
    */
   tryHideLoadMore() {
     if (this.loadedCommentsCount === this.activeCommentsTotalCount){
-      this.elements.commentsloader.classList.add('hidden');
+      this.elements.loadMoreBtn.classList.add('hidden');
     } else {
-      this.elements.commentsloader.classList.remove('hidden');
+      this.elements.loadMoreBtn.classList.remove('hidden');
     }
   }
 
@@ -95,14 +95,14 @@ class FullPost {
    * Добавляет обработчик нажатия на кнопку загрузки комментариев
    */
   addCommentLoaderEventListener() {
-    this.elements.commentsloader.addEventListener('click', this.loadMoreComments);
+    this.elements.loadMoreBtn.addEventListener('click', this.loadMoreComments);
   }
 
   /**
    * Удаляет обработчик нажатия на кнопку загрузки комментариев
    */
   removeCommentLoaderEventListener() {
-    this.elements.commentsloader.removeEventListener('click', this.loadMoreComments);
+    this.elements.loadMoreBtn.removeEventListener('click', this.loadMoreComments);
   }
 
   /**
@@ -144,7 +144,7 @@ class FullPost {
       caption: bigPicture.querySelector('.social__caption'),
       closeBtn: bigPicture.querySelector('#picture-cancel'),
       loadedCommentsCount: bigPicture.querySelector('.social__comment-count').childNodes[0],
-      commentsloader: bigPicture.querySelector('.comments-loader')
+      loadMoreBtn: bigPicture.querySelector('.comments-loader')
     };
   }
 }
