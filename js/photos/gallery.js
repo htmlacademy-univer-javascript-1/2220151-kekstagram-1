@@ -42,7 +42,7 @@ class Gallery {
     this.fullPost.show();
     document.body.classList.add('modal-open');
 
-    this.fullPost.addCommentLoaderEvent();
+    this.fullPost.addCommentLoaderEventListener();
     this.fullPost.addCloseEventListeners();
   }
 }

@@ -72,14 +72,15 @@ class FullPost {
       document.body.classList.remove('modal-open');
 
       this.removeCloseEventListener();
+      this.removeCommentLoaderEventListener();
     }
   }
 
-  addCommentLoaderEvent() {
+  addCommentLoaderEventListener() {
     this.elements.commentsloader.addEventListener('click', this.loadMoreComments);
   }
 
-  removeCommentLoaderEvent() {
+  removeCommentLoaderEventListener() {
     this.elements.commentsloader.removeEventListener('click', this.loadMoreComments);
   }
 
