@@ -1,10 +1,10 @@
-import {commentTemplate} from '../templates/comment_template.js';
+import {commentTemplate} from '../templates/comment-template.js';
 
 
 /**
  * Создает HTML элементов списка комментариев по посту
- * @param {object} post Объект поста
- * @returns HTML-строка списка комментариев без `<ul></ul>`
+ * @param {object} comments Объект поста
+ * @returns HTML-строка списка комментариев (без `<ul></ul>`)
  */
 const createCommentsHtml = (comments) => {
   let html = '';

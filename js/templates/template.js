@@ -27,7 +27,7 @@ class Template {
    * @returns {function(String):String} `replacer` возвращает по `match` значение одноименного параметра в `data`
    */
   _replaceMatch(data) {
-    const replacer = (match) => {
+    return (match) => {
       const keyName = match.match(/{{(.+)}}/)[1].trim();
       const property = keyName.match(/(.+)\.(.+)/);
 
@@ -35,8 +35,6 @@ class Template {
         ? data[property[1]][property[2]]
         : data[keyName];
     };
-
-    return replacer;
   }
 }
 

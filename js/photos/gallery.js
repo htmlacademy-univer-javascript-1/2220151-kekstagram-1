@@ -1,5 +1,5 @@
-import {PreviewsGallery} from './previews_gallery.js';
-import {FullPost} from './full_post.js';
+import {PreviewsGallery} from './previews-gallery.js';
+import {FullPost} from './full-post.js';
 
 
 /**
@@ -7,19 +7,8 @@ import {FullPost} from './full_post.js';
  */
 class Gallery {
   constructor(posts) {
-    this.posts = posts;
     this.previewGallery = new PreviewsGallery(posts);
-    this.previewGallery.setPostIndecies();
     this.fullPost = new FullPost(posts);
-  }
-
-  /**
-   * Добавляет миниатюры постов на страницу
-   * @return {Gallery} `this`
-   */
-  show() {
-    this.previewGallery.show();
-    return this;
   }
 
   /**
@@ -27,7 +16,7 @@ class Gallery {
    * @return {Gallery} `this`
    */
   addEventListeners() {
-    this.previewGallery.setOnClick(this.onPreviewClick.bind(this));
+    this.previewGallery.setOnPreviewClick(this.onPreviewClick.bind(this));
     this.previewGallery.addEventListeners();
     return this;
   }
@@ -42,8 +31,16 @@ class Gallery {
     this.fullPost.show();
     document.body.classList.add('modal-open');
 
-    this.fullPost.addCommentLoaderEventListener();
-    this.fullPost.addCloseEventListeners();
+    this.fullPost.addEventListeners();
+  }
+
+  /**
+   * Добавляет миниатюры постов на страницу
+   * @return {Gallery} `this`
+   */
+  show() {
+    this.previewGallery.show();
+    return this;
   }
 }
 

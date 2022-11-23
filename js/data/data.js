@@ -1,36 +1,5 @@
-import {getRandomBetween, getShuffled, getRange, getRandomItem} from './util.js';
-
-const POST_COUNT = 25;
-
-const MIN_LIKES = 15;
-const MAX_LIKES = 200;
-
-const MAX_COMMENTS = 20;
-const POSITIVE_COMMENTS = ['Всё отлично!'];
-const NEGATIVE_COMMENTS = [
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
-
-const DESCRIPTIONS = [
-  'Чиллим на природе',
-  'Это я на Марсе, сейчас дома уже',
-  'Люблю понедельники',
-  'Never Gonna Give You Up',
-  '25 лет назад это было бы невозможно'
-];
-
-const NAMES = [
-  'Владимир',
-  'Виктор',
-  'Юрий',
-  'Николай',
-  'Борис',
-  'Анатолий'
-];
+import {getRandomBetween, getShuffled, getRange, getRandomItem} from '../util.js';
+import {POST_COUNT, MIN_LIKES, MAX_LIKES, MAX_COMMENTS, POSITIVE_COMMENTS, NEGATIVE_COMMENTS, DESCRIPTIONS, NAMES} from './data-consts.js';
 
 
 /**
@@ -38,9 +7,9 @@ const NAMES = [
  * @returns {Number[][]} Случайные: id постов, индексы url фотографий, id комментариев
  */
 const getRandomRanges = () => [
-  getShuffled(getRange(1, POST_COUNT)), // id indecies
-  getShuffled(getRange(1, POST_COUNT)), // img url indecies
-  getShuffled(getRange(1, POST_COUNT * MAX_COMMENTS)) // comment id indecies
+  getShuffled(getRange(1, POST_COUNT)), // id indexes
+  getShuffled(getRange(1, POST_COUNT)), // img url indexes
+  getShuffled(getRange(1, POST_COUNT * MAX_COMMENTS)) // comment id indexes
 ];
 
 /**
@@ -81,7 +50,8 @@ const createComment = (commentIds, index) => ({
  */
 const createComments = (commentIds, postIndex) => {
   const comments = [];
-  for (let i = 0; i < getRandomBetween(0, MAX_COMMENTS); ++i) {
+  const commentsCount = getRandomBetween(0, MAX_COMMENTS);
+  for (let i = 0; i < commentsCount; ++i) {
     comments[i] = createComment(commentIds, postIndex * MAX_COMMENTS + i);
   }
   return comments;
@@ -89,17 +59,17 @@ const createComments = (commentIds, postIndex) => {
 
 /**
  * Создает посты со случайными идентификаторами, изображениями, описаниями, комментариями, количеством лайков
- * @param {Number[]} ids
- * @param {Number[]} imgs
- * @param {Number[]} commentIds
+ * @param {Number[]} ids Доступные идентификаторы постов
+ * @param {Number[]} imageNumbers Доступные номера изображений
+ * @param {Number[]} commentIds Доступные идентификаторы комментариев
  * @returns {{id: Number, url: String, description: String, likes: Number, comments: object[]}[]} Список постов
  */
-const createPosts = (ids, imgs, commentIds) => {
+const createPosts = (ids, imageNumbers, commentIds) => {
   const posts = [];
   for (let i = 0; i < POST_COUNT; ++i) {
     posts[i] = {
       id: ids[i],
-      url: `photos/${imgs[i]}.jpg`,
+      url: `photos/${imageNumbers[i]}.jpg`,
       description: getRandomItem(DESCRIPTIONS),
       likes: getRandomBetween(MIN_LIKES, MAX_LIKES),
       comments: createComments(commentIds, i)
@@ -113,9 +83,10 @@ const createPosts = (ids, imgs, commentIds) => {
  * @returns {{id: Number, url: String, description: String, likes: Number, comments: object[]}[]} Список постов
  */
 const getPosts = () => {
-  const [ids, imgs, commentIds] = getRandomRanges();
+  const [ids, imageNumbers, commentIds] = getRandomRanges();
 
-  return createPosts(ids, imgs, commentIds);
+  return createPosts(ids, imageNumbers, commentIds);
 };
+
 
 export {getPosts};

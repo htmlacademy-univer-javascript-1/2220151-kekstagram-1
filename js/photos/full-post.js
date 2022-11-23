@@ -6,13 +6,10 @@ import {isEscape} from '../util.js';
  * Класс, отвечающий за полноразмерное отображение постов
  */
 class FullPost {
-  constructor(posts) {
+  constructor() {
     this._setDomFields();
-    this.posts = posts;
-    this.loadedCommentsCount = 0;
-
-    this.onClose = this.onClose.bind(this);
-    this.loadMoreComments = this.loadMoreComments.bind(this);
+    this._bindMethods();
+    this.onLoaderClick = this.loadMoreComments;
   }
 
   /**
@@ -21,16 +18,22 @@ class FullPost {
    */
   setData(post) {
     this.activePost = post;
-    this.activeCommentsTotalCount = post.comments.length;
-    this.loadedCommentsCount = 0;
-
-    this.showLoadedCommentsCount();
-    this.tryHideLoadMore();
+    this.resetComments();
+    this.loadMoreComments();
     this.elements.img.src = post.url;
     this.elements.likes.textContent = post.likes;
-    this.elements.commentsCount.textContent = post.comments.length;
-    this.elements.comments.innerHTML = '';
     this.elements.caption.textContent = post.description;
+  }
+
+  //#region Комментарии
+  /**
+   * Сбрасывает комментарии к пустому состоянию
+   */
+  resetComments() {
+    this.activeCommentsTotalCount = this.activePost.comments.length;
+    this.elements.commentsCount.textContent = this.activeCommentsTotalCount;
+    this.elements.comments.innerHTML = '';
+    this.loadedCommentsCount = 0;
   }
 
   /**
@@ -55,15 +58,31 @@ class FullPost {
    */
   loadMoreComments() {
     const start = this.loadedCommentsCount;
+    this.incrementLoadedCommentsCount();
 
+    this.displayNewComments(start);
+    this.showLoadedCommentsCount();
+    this.tryHideLoadMore();
+  }
+
+  /**
+   * Показывает новозагруженные комментарии
+   * @param start Индекс последнего загруженного комментария до выполнения
+   */
+  displayNewComments(start) {
+    this.elements.comments.innerHTML += createCommentsHtml(
+      this.getCommentsFromTo(
+        start,
+        this.loadedCommentsCount));
+  }
+
+  /**
+   * Увеличивает количество загруженных комментариев
+   */
+  incrementLoadedCommentsCount() {
     this.loadedCommentsCount = Math.min(
       this.loadedCommentsCount + 5,
       this.activeCommentsTotalCount);
-
-    this.elements.comments.innerHTML += createCommentsHtml(this.getCommentsFromTo(start, this.loadedCommentsCount));
-    this.tryHideLoadMore();
-
-    this.showLoadedCommentsCount();
   }
 
   /**
@@ -72,37 +91,42 @@ class FullPost {
   tryHideLoadMore() {
     if (this.loadedCommentsCount === this.activeCommentsTotalCount){
       this.elements.loadMoreBtn.classList.add('hidden');
+      this.removeCommentLoaderEventListener();
     } else {
       this.elements.loadMoreBtn.classList.remove('hidden');
     }
   }
+  //#endregion
+
+  //#region Управление событиями
+  /**
+   * Добавляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
+   */
+  addEventListeners() {
+    this.addCommentLoaderEventListener();
+    this.addCloseEventListeners();
+  }
 
   /**
-   * Обработчик события закрытия полноразмерного отображения
-   * @param {Event} evt Объект события
+   * Удаляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
    */
-  onClose(evt) {
-    if (evt.target.id === 'picture-cancel' || isEscape(evt)) {
-      this.element.classList.add('hidden');
-      document.body.classList.remove('modal-open');
-
-      this.removeCloseEventListener();
-      this.removeCommentLoaderEventListener();
-    }
+  removeEventListeners() {
+    this.removeCommentLoaderEventListener();
+    this.removeCloseEventListeners();
   }
 
   /**
    * Добавляет обработчик нажатия на кнопку загрузки комментариев
    */
   addCommentLoaderEventListener() {
-    this.elements.loadMoreBtn.addEventListener('click', this.loadMoreComments);
+    this.elements.loadMoreBtn.addEventListener('click', this.onLoaderClick);
   }
 
   /**
    * Удаляет обработчик нажатия на кнопку загрузки комментариев
    */
   removeCommentLoaderEventListener() {
-    this.elements.loadMoreBtn.removeEventListener('click', this.loadMoreComments);
+    this.elements.loadMoreBtn.removeEventListener('click', this.onLoaderClick);
   }
 
   /**
@@ -116,16 +140,30 @@ class FullPost {
   /**
    * Удаляет обработчик закрытия поста (крестик и Escape)
    */
-  removeCloseEventListener() {
+  removeCloseEventListeners() {
     this.elements.closeBtn.removeEventListener('click', this.onClose);
     document.removeEventListener('keydown', this.onClose);
+  }
+  //#endregion
+
+  /**
+   * Обработчик события закрытия полноразмерного отображения
+   * @param {Event} evt Объект события
+   */
+  onClose(evt) {
+    if (evt.target.id === 'picture-cancel' || isEscape(evt)) {
+      this.bigPicture.classList.add('hidden');
+      document.body.classList.remove('modal-open');
+
+      this.removeEventListeners();
+    }
   }
 
   /**
    * Отрисовывает пост в полноразмерном отображении
    */
   show() {
-    this.element.classList.remove('hidden');
+    this.bigPicture.classList.remove('hidden');
   }
 
 
@@ -134,7 +172,7 @@ class FullPost {
    */
   _setDomFields() {
     const bigPicture = document.querySelector('.big-picture');
-    this.element = bigPicture;
+    this.bigPicture = bigPicture;
 
     this.elements = {
       img: bigPicture.querySelector('.big-picture__img img'),
@@ -146,6 +184,14 @@ class FullPost {
       loadedCommentsCount: bigPicture.querySelector('.social__comment-count').childNodes[0],
       loadMoreBtn: bigPicture.querySelector('.comments-loader')
     };
+  }
+
+  /**
+   * Привязывает контексты методов к объекту данного класса
+   */
+  _bindMethods() {
+    this.onClose = this.onClose.bind(this);
+    this.loadMoreComments = this.loadMoreComments.bind(this);
   }
 }
 
