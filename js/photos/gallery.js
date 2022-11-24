@@ -26,7 +26,7 @@ class Gallery {
    * @param {object} post Пост
    */
   onPreviewClick(post) {
-    this.fullPost.setData(post);
+    this.fullPost.setActivePost(post);
 
     this.fullPost.show();
     document.body.classList.add('modal-open');

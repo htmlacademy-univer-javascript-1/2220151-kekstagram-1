@@ -18,7 +18,16 @@ class PreviewsGallery {
    * Добавляет обработчики событий для миниатюр
    */
   addEventListeners() {
-    this.parent.addEventListener('click', this.onClick);
+    this.parent.addEventListener('click', this.onPreviewClick);
+  }
+
+  /**
+   * Отрисовывает миниатюры постов в элементе с классом `pictures`
+   */
+  show() {
+    this.parent.innerHTML += this.posts
+      .map((post) => previewTemplate.withInserted(post))
+      .join('');
   }
 
   /**
@@ -26,7 +35,7 @@ class PreviewsGallery {
    * @param {(post: object) => void} onPreviewClick Функция обратного вызова (принимает пост для отрисовки)
    */
   setOnPreviewClick(onPreviewClick) {
-    this.onClick = function(evt) {
+    this.onPreviewClick = function(evt) {
       if (evt.target.classList.contains('picture__img')) {
         const postId = evt.target.parentElement.dataset.postId;
         const post = this.posts[this.indexById[postId]];
@@ -34,24 +43,6 @@ class PreviewsGallery {
         onPreviewClick(post);
       }
     }.bind(this);
-  }
-
-  /**
-   * Отрисовывает миниатюры постов в элементе с классом `pictures`
-   */
-  show() {
-    this.parent.innerHTML += this.getPreviewsHTML();
-  }
-
-  /**
-   * Создает HTML миниатюр постов
-   */
-  getPreviewsHTML() {
-    let html = '';
-    this.posts.forEach((post) => {
-      html += previewTemplate.withInserted(post);
-    });
-    return html;
   }
 
 

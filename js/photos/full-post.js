@@ -1,5 +1,8 @@
 import {createCommentsHtml} from './comments.js';
-import {isEscape} from '../util.js';
+import {isEscPressed} from '../util.js';
+
+
+const COMMENT_LOAD_COUNT_INCREMENT = 5;
 
 
 /**
@@ -9,27 +12,90 @@ class FullPost {
   constructor() {
     this._setDomFields();
     this._bindMethods();
-    this.onLoaderClick = this.loadMoreComments;
   }
 
   /**
    * Вставляет данные о посте в соответствующие элементы
    * @param {object} post Пост для отображения
    */
-  setData(post) {
+  setActivePost(post) {
     this.activePost = post;
-    this.resetComments();
-    this.loadMoreComments();
     this.elements.img.src = post.url;
     this.elements.likes.textContent = post.likes;
     this.elements.caption.textContent = post.description;
+    this.setupComments();
+    this.loadMoreComments();
   }
+
+  //#region Управление событиями
+  /**
+   * Добавляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
+   */
+  addEventListeners() {
+    this.addCommentLoaderEventListener();
+    this.addCloseEventListeners();
+  }
+
+  /**
+   * Удаляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
+   */
+  removeEventListeners() {
+    this.removeCommentLoaderEventListener();
+    this.removeCloseEventListeners();
+  }
+
+  /**
+   * Добавляет обработчик нажатия на кнопку загрузки комментариев
+   */
+  addCommentLoaderEventListener() {
+    this.elements.loadMoreBtn.addEventListener('click', this.onLoaderClick);
+  }
+
+  /**
+   * Удаляет обработчик нажатия на кнопку загрузки комментариев
+   */
+  removeCommentLoaderEventListener() {
+    this.elements.loadMoreBtn.removeEventListener('click', this.onLoaderClick);
+  }
+
+  /**
+   * Добавляет обработчик закрытия поста (крестик и Escape)
+   */
+  addCloseEventListeners() {
+    this.elements.closeBtn.addEventListener('click', this.onCloseBtnClick);
+    document.addEventListener('keydown', this.close);
+  }
+
+  /**
+   * Удаляет обработчик закрытия поста (крестик и Escape)
+   */
+  removeCloseEventListeners() {
+    this.elements.closeBtn.removeEventListener('click', this.onCloseBtnClick);
+    document.removeEventListener('keydown', this.onKeyDown);
+  }
+  //#endregion
+
+  //#region Обработчики событий
+  onCloseBtnClick() {
+    this.close();
+  }
+
+  onKeyDown(evt) {
+    if (isEscPressed(evt)) {
+      this.close();
+    }
+  }
+
+  onLoaderClick() {
+    this.loadMoreComments();
+  }
+  //#endregion
 
   //#region Комментарии
   /**
    * Сбрасывает комментарии к пустому состоянию
    */
-  resetComments() {
+  setupComments() {
     this.activeCommentsTotalCount = this.activePost.comments.length;
     this.elements.commentsCount.textContent = this.activeCommentsTotalCount;
     this.elements.comments.innerHTML = '';
@@ -81,7 +147,7 @@ class FullPost {
    */
   incrementLoadedCommentsCount() {
     this.loadedCommentsCount = Math.min(
-      this.loadedCommentsCount + 5,
+      this.loadedCommentsCount + COMMENT_LOAD_COUNT_INCREMENT,
       this.activeCommentsTotalCount);
   }
 
@@ -98,72 +164,21 @@ class FullPost {
   }
   //#endregion
 
-  //#region Управление событиями
-  /**
-   * Добавляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
-   */
-  addEventListeners() {
-    this.addCommentLoaderEventListener();
-    this.addCloseEventListeners();
-  }
-
-  /**
-   * Удаляет обработчики событий нажатия на кнопку загрузки комментариев и закрытия
-   */
-  removeEventListeners() {
-    this.removeCommentLoaderEventListener();
-    this.removeCloseEventListeners();
-  }
-
-  /**
-   * Добавляет обработчик нажатия на кнопку загрузки комментариев
-   */
-  addCommentLoaderEventListener() {
-    this.elements.loadMoreBtn.addEventListener('click', this.onLoaderClick);
-  }
-
-  /**
-   * Удаляет обработчик нажатия на кнопку загрузки комментариев
-   */
-  removeCommentLoaderEventListener() {
-    this.elements.loadMoreBtn.removeEventListener('click', this.onLoaderClick);
-  }
-
-  /**
-   * Добавляет обработчик закрытия поста (крестик и Escape)
-   */
-  addCloseEventListeners() {
-    this.elements.closeBtn.addEventListener('click', this.onClose);
-    document.addEventListener('keydown', this.onClose);
-  }
-
-  /**
-   * Удаляет обработчик закрытия поста (крестик и Escape)
-   */
-  removeCloseEventListeners() {
-    this.elements.closeBtn.removeEventListener('click', this.onClose);
-    document.removeEventListener('keydown', this.onClose);
-  }
-  //#endregion
-
-  /**
-   * Обработчик события закрытия полноразмерного отображения
-   * @param {Event} evt Объект события
-   */
-  onClose(evt) {
-    if (evt.target.id === 'picture-cancel' || isEscape(evt)) {
-      this.bigPicture.classList.add('hidden');
-      document.body.classList.remove('modal-open');
-
-      this.removeEventListeners();
-    }
-  }
-
   /**
    * Отрисовывает пост в полноразмерном отображении
    */
   show() {
     this.bigPicture.classList.remove('hidden');
+  }
+
+  /**
+   * Обработчик события закрытия полноразмерного отображения
+   */
+  close() {
+    this.bigPicture.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+
+    this.removeEventListeners();
   }
 
 
@@ -187,10 +202,12 @@ class FullPost {
   }
 
   /**
-   * Привязывает контексты методов к объекту данного класса
+   * Привязывает контексты необходимых методов к объекту данного класса
    */
   _bindMethods() {
-    this.onClose = this.onClose.bind(this);
+    this.close = this.close.bind(this);
+    this.onCloseBtnClick = this.onCloseBtnClick.bind(this);
+    this.onLoaderClick = this.onLoaderClick.bind(this);
     this.loadMoreComments = this.loadMoreComments.bind(this);
   }
 }

@@ -1,4 +1,4 @@
-import {getRandomBetween, getShuffled, getRange, getRandomItem} from '../util.js';
+import {getRandomBetween, getShuffled, getRange, getRandomItem} from './data-util.js';
 import {POST_COUNT, MIN_LIKES, MAX_LIKES, MAX_COMMENTS, POSITIVE_COMMENTS, NEGATIVE_COMMENTS, DESCRIPTIONS, NAMES} from './data-consts.js';
 
 

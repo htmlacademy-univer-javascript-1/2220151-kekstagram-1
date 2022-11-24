@@ -1326,12 +1326,6 @@ main {
 /* Адаптивности чуток
    ========================================================================== */
 
-@media (min-width: 1024px) {
-  .img-upload__wrapper {
-    padding-bottom: 0;
-  }
-}
-
 @media (min-width: 1024px) and (max-width: 1359px) {
   .container {
     width: 980px;
@@ -1394,4 +1388,41 @@ main {
 
 .hidden {
   display: none;
+}
+
+
+/* Кастомные стили
+   ========================================================================== */
+
+.img-upload__field-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.form-error {
+  --error-color: FireBrick;
+
+  width: 450px;
+  margin: 10px auto 5px;
+  padding: .5em 0;
+  border-radius: 5px;
+  border: 1px solid var(--error-color);
+
+  text-transform: none;
+  backdrop-filter: blur(4px);
+  background-color: MistyRose;
+  color: var(--error-color);
+}
+
+.text__description {
+  min-height: 55px;
+  resize: vertical;
+}
+
+.text__description-length {
+  width: 450px;
+  text-align: right;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }

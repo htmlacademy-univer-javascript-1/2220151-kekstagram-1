@@ -1,6 +1,6 @@
 import {HashtagValidator} from './hashtag-validator.js';
 import {rules} from './validation-rules.js';
-import {isEscape} from '../util.js';
+import {isEscPressed} from '../util.js';
 
 
 /**
@@ -14,23 +14,12 @@ class UploadForm {
     this._bindMethods();
   }
 
-  /**
-   * Проверяет форму на валидность
-   * @returns {Boolean} Форма валидна
-   */
-  validate() {
-    if (!this.validator) {
-      this.validator = new HashtagValidator(this.form, this.inputs.hashtagsInput, rules);
-    }
-    return this.validator.validate();
-  }
-
   //#region Управление событиями
   /**
    * Добавляет обработчики событий формы
    */
   addOpenEventListener() {
-    this.inputs.fileInput.addEventListener('change', this.onOpen);
+    this.inputs.fileInput.addEventListener('change', this.onImageUpload);
   }
 
   addEventListeners() {
@@ -50,12 +39,30 @@ class UploadForm {
 
   //#region Обработчики событий
   /**
+   * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
+   */
+  onImageUpload() {
+    this.show();
+    this.loadImagePreview();
+    this.addEventListeners();
+  }
+
+  /**
+   * Прячет интерфейс формы и сбрасывает значение поля ввода изображения
+   */
+  onClose() {
+    this.hide();
+    this.removeEventListeners();
+    this.resetFileInput();
+  }
+
+  /**
    * Обработчик события нажатия на клавижу в форме
    * @param {Event} evt Объект события
    */
   onFormKeydown(evt) {
-    if (isEscape(evt) && document.activeElement !== this.inputs.description) {
-      this.reset();
+    if (isEscPressed(evt) && document.activeElement !== this.inputs.description) {
+      this.onClose();
     }
   }
 
@@ -79,28 +86,15 @@ class UploadForm {
       evt.preventDefault();
     }
   }
+  //#endregion
 
   /**
-   * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
+   * Отрисовывает интерфейс формы
    */
-  onOpen() {
+  show() {
     document.body.classList.add('modal-open');
     this.interface.overlay.classList.remove('hidden');
-
-    this.addEventListeners();
-
-    this.interface.preview.src = URL.createObjectURL(this.inputs.fileInput.files[0]);
   }
-
-  /**
-   * Прячет интерфейс формы и сбрасывает значение поля ввода изображения
-   */
-  onClose() {
-    this.hide();
-    this.removeEventListeners();
-    this.inputs.fileInput.value = '';
-  }
-  //#endregion
 
   /**
    * Прячет интерфейс формы
@@ -108,6 +102,31 @@ class UploadForm {
   hide() {
     this.interface.overlay.classList.add('hidden');
     document.body.classList.remove('modal-open');
+  }
+
+  /**
+   * Устанавливает предпросмотр загружаемого изображения
+   */
+  loadImagePreview() {
+    this.interface.preview.src = URL.createObjectURL(this.inputs.fileInput.files[0]);
+  }
+
+  /**
+   * Сбрасывает значение поля ввода загрузки изображения
+   */
+  resetFileInput() {
+    this.inputs.fileInput.value = '';
+  }
+
+  /**
+   * Проверяет форму на валидность
+   * @returns {Boolean} Форма валидна
+   */
+  validate() {
+    if (!this.validator) {
+      this.validator = new HashtagValidator(this.form, this.inputs.hashtagsInput, rules);
+    }
+    return this.validator.validate();
   }
 
 
@@ -138,10 +157,11 @@ class UploadForm {
    * Привязывает контексты методов к объекту данного класса
    */
   _bindMethods() {
-    this.onOpen = this.onOpen.bind(this);
+    this.onImageUpload = this.onImageUpload.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onFormKeydown = this.onFormKeydown.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onDescriptionInput = this.onDescriptionInput.bind(this);
   }
 }
 
