@@ -529,24 +529,37 @@ main {
 
 .effect-level {
   position: absolute;
-  bottom: 10px;
+  bottom: 9px;
   left: 50%;
 
+  padding: 7px 11px 0;
+
   width: 495px;
-  height: 33px;
+  height: 34px;
 
   font-size: 12px;
-  line-height: 42px;
   text-align: center;
   color: #ffffff;
   white-space: nowrap;
 
   background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 33px;
+  border-radius: 34px;
 
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
+}
+
+.effect-level .noUi-target {
+  border-radius: 16px;
+}
+
+.effect-level .noUi-connects {
+  border-radius: 13px;
+}
+
+.effect-level .noUi-connect {
+  background: #ffe753;
 }
 
 .effect-level__value {
@@ -1326,6 +1339,12 @@ main {
 /* Адаптивности чуток
    ========================================================================== */
 
+@media (min-width: 1024px) {
+  .img-upload__wrapper {
+    padding-bottom: 0;
+  }
+}
+
 @media (min-width: 1024px) and (max-width: 1359px) {
   .container {
     width: 980px;
@@ -1388,41 +1407,4 @@ main {
 
 .hidden {
   display: none;
-}
-
-
-/* Кастомные стили
-   ========================================================================== */
-
-.img-upload__field-wrapper {
-  display: flex;
-  flex-direction: column-reverse;
-}
-
-.form-error {
-  --error-color: FireBrick;
-
-  width: 450px;
-  margin: 10px auto 5px;
-  padding: .5em 0;
-  border-radius: 5px;
-  border: 1px solid var(--error-color);
-
-  text-transform: none;
-  backdrop-filter: blur(4px);
-  background-color: MistyRose;
-  color: var(--error-color);
-}
-
-.text__description {
-  min-height: 55px;
-  resize: vertical;
-}
-
-.text__description-length {
-  width: 450px;
-  text-align: right;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
 }
