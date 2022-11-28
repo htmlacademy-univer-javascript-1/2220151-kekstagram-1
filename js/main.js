@@ -1,6 +1,6 @@
-import {getPosts} from './data.js';
+import {getPosts} from './data/data.js';
 import {Gallery} from './photos/gallery.js';
-import {UploadForm} from './upload/upload_form.js';
+import {UploadForm} from './upload/upload-form.js';
 
 
 const main = () => {
@@ -10,7 +10,7 @@ const main = () => {
   gallery.show().addEventListeners();
 
   const uploadForm = new UploadForm();
-  uploadForm.addEventListeners();
+  uploadForm.addOpenEventListener();
 };
 
 

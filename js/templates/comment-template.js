@@ -1,7 +1,7 @@
 import {Template} from './template.js';
 
 
-const COMMENT = `
+const COMMENT_HTML = `
 <li class="social__comment">
     <img
         class="social__picture"
@@ -10,7 +10,7 @@ const COMMENT = `
         width="35" height="35">
     <p class="social__text">{{message}}</p>
 </li>`;
-const commentTemplate = new Template(COMMENT);
+const commentTemplate = new Template(COMMENT_HTML);
 
 
 export {commentTemplate};

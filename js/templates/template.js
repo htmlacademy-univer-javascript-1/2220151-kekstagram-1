@@ -1,3 +1,8 @@
+const CURLY_BRACES_RE = /{{(.+)}}/;
+const CURLY_BRACES_ALL_RE = new RegExp(CURLY_BRACES_RE, 'g');
+const COMPLEX_PROPERTY_RE = /(.+)\.(.+)/;
+
+
 /**
  * Класс, предоставляющий функциноал шаблонизатора, где шаблон представляет HTML-строку
  * с параметрами, обернутыми в `{{фигурные скобки}}`. Сложный параметр разделяется
@@ -17,8 +22,7 @@ class Template {
    * @returns {String} HTML-строка с подставленными значениями
    */
   withInserted(data) {
-    const curlyBracesRe = /{{(.+)}}/g;
-    return this.template.replace(curlyBracesRe, this._replaceMatch(data));
+    return this.template.replace(CURLY_BRACES_ALL_RE, this._replaceMatch(data));
   }
 
   /**
@@ -27,16 +31,14 @@ class Template {
    * @returns {function(String):String} `replacer` возвращает по `match` значение одноименного параметра в `data`
    */
   _replaceMatch(data) {
-    const replacer = (match) => {
-      const keyName = match.match(/{{(.+)}}/)[1].trim();
-      const property = keyName.match(/(.+)\.(.+)/);
+    return (match) => {
+      const keyName = match.match(CURLY_BRACES_RE)[1].trim();
+      const property = keyName.match(COMPLEX_PROPERTY_RE);
 
       return property
         ? data[property[1]][property[2]]
         : data[keyName];
     };
-
-    return replacer;
   }
 }
 

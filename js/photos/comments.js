@@ -1,18 +1,14 @@
-import {commentTemplate} from '../templates/comment_template.js';
+import {commentTemplate} from '../templates/comment-template.js';
 
 
 /**
  * Создает HTML элементов списка комментариев по посту
- * @param {object} post Объект поста
- * @returns HTML-строка списка комментариев без `<ul></ul>`
+ * @param {object} comments Объект поста
+ * @returns HTML-строка списка комментариев (без `<ul></ul>`)
  */
-const createCommentsHtml = (post) => {
-  let html = '';
-  for (const comment of post.comments) {
-    html += commentTemplate.withInserted(comment);
-  }
-  return html;
-};
+const createCommentsHtml = (comments) => comments
+  .map((comment) => commentTemplate.withInserted(comment))
+  .join('');
 
 
 export {createCommentsHtml};
