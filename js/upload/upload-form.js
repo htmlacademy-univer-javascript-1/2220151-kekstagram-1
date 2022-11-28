@@ -1,6 +1,7 @@
 import {HashtagValidator} from './hashtag-validator.js';
 import {rules} from './validation-rules.js';
 import {isEscPressed} from '../util.js';
+import {Scale} from './editing/scale.js';
 
 
 /**
@@ -139,6 +140,7 @@ class UploadForm {
       description: this.form.querySelector('.text__description'),
       fileInput: this.form.querySelector('#upload-file')
     };
+    new Scale(this.form, this.interface.preview).addEventListeners();
   }
 
   /**
