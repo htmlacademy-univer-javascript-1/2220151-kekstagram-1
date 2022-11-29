@@ -1,6 +1,8 @@
 import {HashtagValidator} from './hashtag-validator.js';
 import {rules} from './validation-rules.js';
 import {isEscPressed} from '../util.js';
+import {Scaler} from './editing/scaler.js';
+import {Effector } from './editing/effector.js';
 
 
 /**
@@ -11,29 +13,40 @@ class UploadForm {
     this.form = document.querySelector('.img-upload__form');
     this._setInterface();
     this._setInputs();
+    this._setImageEditors();
     this._bindMethods();
   }
 
   //#region Управление событиями
   /**
-   * Добавляет обработчики событий формы
+   * Добавляет обработчик события открытия формы
    */
-  addOpenEventListener() {
+  addImageUploadEventListener() {
     this.inputs.fileInput.addEventListener('change', this.onImageUpload);
   }
 
+  /**
+   * Добавляет необходимые обработчики событий
+   */
   addEventListeners() {
     this.form.addEventListener('submit', this.onSubmit);
     this.inputs.description.addEventListener('input', this.onDescriptionInput);
     this.interface.closeBtn.addEventListener('click', this.onClose);
     document.addEventListener('keydown', this.onFormKeydown);
+    this.imageScaler.addEventListeners();
+    this.imageEffector.setup();
   }
 
+  /**
+   * Удаляет обработчики событий
+   */
   removeEventListeners() {
     this.form.removeEventListener('submit', this.onSubmit);
     this.inputs.description.addEventListener('input', this.onDescriptionInput);
     this.interface.closeBtn.removeEventListener('click', this.onClose);
     document.removeEventListener('keydown', this.onFormKeydown);
+    this.imageScaler.removeEventListeners();
+    this.imageEffector.reset();
   }
   //#endregion
 
@@ -139,6 +152,14 @@ class UploadForm {
       description: this.form.querySelector('.text__description'),
       fileInput: this.form.querySelector('#upload-file')
     };
+  }
+
+  /**
+   * Устанавливает поля класса с обработчиками фотографии
+   */
+  _setImageEditors() {
+    this.imageScaler = new Scaler(this.form, this.interface.preview);
+    this.imageEffector = new Effector(this.form, this.interface.preview);
   }
 
   /**
