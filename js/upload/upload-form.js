@@ -2,7 +2,7 @@ import {HashtagValidator} from './hashtag-validator.js';
 import {rules} from './validation-rules.js';
 import {isEscPressed} from '../util.js';
 import {Scaler} from './editing/scaler.js';
-import {Effector } from './editing/effector.js';
+import {Effector} from './editing/effector.js';
 
 
 /**
