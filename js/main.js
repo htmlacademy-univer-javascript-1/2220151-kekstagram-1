@@ -10,7 +10,7 @@ const main = () => {
   gallery.show().addEventListeners();
 
   const uploadForm = new UploadForm();
-  uploadForm.addOpenEventListener();
+  uploadForm.addImageUploadEventListener();
 };
 
 
