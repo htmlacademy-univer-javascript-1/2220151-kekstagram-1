@@ -34,20 +34,6 @@ class EffectSlider {
     return this;
   }
 
-  /*
-  /!**
-   *
-   * @param type
-   * @param callback
-   *!/
-  addEventListener(type, callback) {
-    this.slider.on(type, () => {
-      callback();
-      console.log(this.valueElement, this.valueElement.value, this.get());
-      this.valueElement.value = this.get();
-    });
-  }*/
-
 
   /**
    * Перенаправляет методы с данного класса на экземпляр NoUiSlider

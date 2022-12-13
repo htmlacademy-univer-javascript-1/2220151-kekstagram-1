@@ -22,6 +22,8 @@ class UploadForm {
    * Добавляет обработчик события открытия формы
    */
   addImageUploadEventListener() {
+    //eslint-disable-next-line
+    console.log(this.inputs.fileInput);
     this.inputs.fileInput.addEventListener('change', this.onImageUpload);
   }
 
@@ -55,6 +57,8 @@ class UploadForm {
    * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
    */
   onImageUpload() {
+    //eslint-disable-next-line
+    console.log('onImageUpload');
     this.show();
     this.loadImagePreview();
     this.addEventListeners();
