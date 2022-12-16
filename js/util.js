@@ -13,5 +13,15 @@ const isNoLongerThan = (text, maxLength) => text.length <= maxLength;
  */
 const isEscPressed = (evt) => evt.key === 'Escape';
 
+/**
+ * Добавляет класс `modal-open` элементу `body`
+ */
+const setBodyModalOpen = () => document.body.classList.add('modal-open');
 
-export {isNoLongerThan, isEscPressed};
+/**
+ * Удаляет класс `modal-open` у элемента `body`
+ */
+const removeBodyModalOpen = () => document.body.classList.add('modal-open');
+
+
+export {isNoLongerThan, isEscPressed, setBodyModalOpen, removeBodyModalOpen};

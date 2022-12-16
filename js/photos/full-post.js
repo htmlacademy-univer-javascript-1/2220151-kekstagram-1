@@ -1,5 +1,5 @@
 import {createCommentsHtml} from './comments.js';
-import {isEscPressed} from '../util.js';
+import {isEscPressed, removeBodyModalOpen} from '../util.js';
 
 
 const COMMENT_LOAD_COUNT_INCREMENT = 5;
@@ -176,7 +176,7 @@ class FullPost {
    */
   close() {
     this.bigPicture.classList.add('hidden');
-    document.body.classList.remove('modal-open');
+    removeBodyModalOpen();
 
     this.removeEventListeners();
   }

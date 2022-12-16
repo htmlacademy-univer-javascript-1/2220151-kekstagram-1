@@ -1,8 +1,10 @@
 import {HashtagValidator} from './hashtag-validator.js';
 import {rules} from './validation-rules.js';
-import {isEscPressed} from '../util.js';
+import {isEscPressed, setBodyModalOpen, removeBodyModalOpen} from '../util.js';
 import {Scaler} from './editing/scaler.js';
 import {Effector} from './editing/effector.js';
+import {publishPost} from '../data/api.js';
+import {Popup} from '../popup.js';
 
 
 /**
@@ -22,8 +24,6 @@ class UploadForm {
    * Добавляет обработчик события открытия формы
    */
   addImageUploadEventListener() {
-    //eslint-disable-next-line
-    console.log(this.inputs.fileInput);
     this.inputs.fileInput.addEventListener('change', this.onImageUpload);
   }
 
@@ -57,8 +57,6 @@ class UploadForm {
    * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
    */
   onImageUpload() {
-    //eslint-disable-next-line
-    console.log('onImageUpload');
     this.show();
     this.loadImagePreview();
     this.addEventListeners();
@@ -78,7 +76,7 @@ class UploadForm {
    * @param {Event} evt Объект события
    */
   onFormKeydown(evt) {
-    if (isEscPressed(evt) && document.activeElement !== this.inputs.description) {
+    if (isEscPressed(evt) && document.activeElement !== this.inputs.description && !Popup.shown) {
       this.onClose();
     }
   }
@@ -97,19 +95,27 @@ class UploadForm {
    * @param {Event} evt Объект события
    */
   onSubmit(evt) {
+    evt.preventDefault();
     const isValid = this.validate();
 
-    if (!isValid) {
-      evt.preventDefault();
+    if (isValid) {
+      publishPost(new FormData(this.form)).then((result) => {
+        if (result) {
+          this.hide();
+          this.resetFileInput();
+          this.removeEventListeners();
+        }
+      });
     }
   }
   //#endregion
 
+  //#region Методы
   /**
    * Отрисовывает интерфейс формы
    */
   show() {
-    document.body.classList.add('modal-open');
+    setBodyModalOpen();
     this.interface.overlay.classList.remove('hidden');
   }
 
@@ -118,7 +124,7 @@ class UploadForm {
    */
   hide() {
     this.interface.overlay.classList.add('hidden');
-    document.body.classList.remove('modal-open');
+    removeBodyModalOpen();
   }
 
   /**
@@ -145,8 +151,10 @@ class UploadForm {
     }
     return this.validator.validate();
   }
+  //#endregion
 
 
+  //#region Приватные метаметоды
   /**
    * Устанавливает поле объекта с полями ввода
    */
@@ -188,6 +196,7 @@ class UploadForm {
     this.onSubmit = this.onSubmit.bind(this);
     this.onDescriptionInput = this.onDescriptionInput.bind(this);
   }
+  //#endregion
 }
 
 

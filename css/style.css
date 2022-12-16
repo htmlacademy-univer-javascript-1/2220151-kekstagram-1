@@ -1336,16 +1336,6 @@ main {
 }
 
 
-
-@media (min-width: 1024px) {
-  .img-upload__wrapper {
-    padding-bottom: 0;
-  }
-}
-
-
-
-
 /* Адаптивности чуток
    ========================================================================== */
 
@@ -1452,4 +1442,57 @@ main {
 
 .img-upload__effect-level.effect-level:has(>.hidden) {
   display: none;
+}
+
+@media (max-width: 1023px) {
+  .img-upload {
+    padding-bottom: 60px;
+  }
+}
+
+.img-upload__wrapper {
+  padding-bottom: 0;
+}
+
+.img-upload__overlay {
+  padding-bottom: 60px;
+}
+
+
+.popup {
+  z-index: 9999;
+}
+
+.popup__wrapper {
+  max-width: 800px;
+  min-width: 600px;
+  padding: 10px 60px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.popup__wrapper.good {
+  background: #e3a91f;
+}
+
+.popup__wrapper.bad {
+  background: #f04946;
+}
+
+.popup__text {
+  text-transform: none;
+}
+
+.popup__ok {
+  display: block;
+  padding: 10px 40px;
+  margin: 0.67em 0;
+  border-radius: 4px;
+  border: 0;
+  font-weight: 700;
+  background: #ffffffa0;
+  color: black;
 }

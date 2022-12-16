@@ -1,24 +1,27 @@
-import {getPosts} from './data/fakedata.js';
+import {getPosts} from './data/api.js';
 import {Gallery} from './photos/gallery.js';
 import {UploadForm} from './upload/upload-form.js';
 
 
-const main = () => {
+const showGallery = () => {
+  getPosts().then((posts) => {
+    if (posts) {
+      const gallery = new Gallery(posts);
+      gallery.show().addEventListeners();
+    }
+  });
+};
 
+
+const setupUpload = () => {
   const uploadForm = new UploadForm();
   uploadForm.addImageUploadEventListener();
-
-  const posts = getPosts();
-
-  const gallery = new Gallery(posts);
-  gallery.show().addEventListeners();
+};
 
 
-  // getPosts().then((posts) => {
-  //   const gallery = new Gallery(posts);
-  //   gallery.show().addEventListeners();
-  //   //eslint-disable-next-line
-  // }).catch(() => console.error('request failed'));
+const main = () => {
+  setupUpload();
+  showGallery();
 };
 
 main();
