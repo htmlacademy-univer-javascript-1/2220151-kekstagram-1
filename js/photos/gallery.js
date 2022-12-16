@@ -1,5 +1,6 @@
 import {PreviewsGallery} from './previews-gallery.js';
 import {FullPost} from './full-post.js';
+import {setBodyModalOpen} from '../util.js';
 
 
 /**
@@ -29,7 +30,7 @@ class Gallery {
     this.fullPost.setActivePost(post);
 
     this.fullPost.show();
-    document.body.classList.add('modal-open');
+    setBodyModalOpen();
 
     this.fullPost.addEventListeners();
   }

@@ -1,17 +1,27 @@
-import {getPosts} from './data/data.js';
+import {getPosts} from './data/api.js';
 import {Gallery} from './photos/gallery.js';
 import {UploadForm} from './upload/upload-form.js';
 
 
-const main = () => {
-  const posts = getPosts();
+const showGallery = () => {
+  getPosts().then((posts) => {
+    if (posts) {
+      const gallery = new Gallery(posts);
+      gallery.show().addEventListeners();
+    }
+  });
+};
 
-  const gallery = new Gallery(posts);
-  gallery.show().addEventListeners();
 
+const setupUpload = () => {
   const uploadForm = new UploadForm();
   uploadForm.addImageUploadEventListener();
 };
 
+
+const main = () => {
+  setupUpload();
+  showGallery();
+};
 
 main();

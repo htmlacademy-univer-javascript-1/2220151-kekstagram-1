@@ -25,9 +25,10 @@ class PreviewsGallery {
    * Отрисовывает миниатюры постов в элементе с классом `pictures`
    */
   show() {
-    this.parent.innerHTML += this.posts
+    const html = this.posts
       .map((post) => previewTemplate.withInserted(post))
       .join('');
+    this.parent.insertAdjacentHTML('beforeend', html);
   }
 
   /**
