@@ -73,6 +73,14 @@ class Scaler {
   }
 
   /**
+   * Сбрасывает значение масштаба к изначальному
+   */
+  reset() {
+    this.scaleValue = START;
+    this.updateImage();
+  }
+
+  /**
    * Блокирует данную кнопку изменения масштаба
    * @param {HTMLButtonElement} btn Кнопка для блокировки
    */
@@ -104,6 +112,7 @@ class Scaler {
    */
   _setMethods() {
     this.updateImage = this.updateImage.bind(this);
+    this.reset = this.reset.bind(this);
     this.onBiggerButtonClick = this.onButtonClick.bind(this, true);
     this.onSmallerButtonClick = this.onButtonClick.bind(this, false);
   }

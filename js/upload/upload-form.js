@@ -68,7 +68,7 @@ class UploadForm {
   onClose() {
     this.hide();
     this.removeEventListeners();
-    this.resetFileInput();
+    this.reset();
   }
 
   /**
@@ -102,7 +102,7 @@ class UploadForm {
       publishPost(new FormData(this.form)).then((result) => {
         if (result) {
           this.hide();
-          this.resetFileInput();
+          this.reset();
           this.removeEventListeners();
         }
       });
@@ -134,11 +134,16 @@ class UploadForm {
     this.interface.preview.src = URL.createObjectURL(this.inputs.fileInput.files[0]);
   }
 
+  reset() {
+    this.inputs.fileInput.value = '';
+    this.imageScaler.reset();
+    this.interface.descriptionLength.textContent = '0/140';
+  }
+
   /**
    * Сбрасывает значение поля ввода загрузки изображения
    */
   resetFileInput() {
-    this.inputs.fileInput.value = '';
   }
 
   /**
