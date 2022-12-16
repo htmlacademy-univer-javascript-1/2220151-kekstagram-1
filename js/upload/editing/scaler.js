@@ -78,6 +78,7 @@ class Scaler {
   reset() {
     this.scaleValue = START;
     this.updateImage();
+    this.checkScaleValue();
   }
 
   /**
