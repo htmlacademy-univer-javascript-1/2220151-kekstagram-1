@@ -21,7 +21,23 @@ const setBodyModalOpen = () => document.body.classList.add('modal-open');
 /**
  * Удаляет класс `modal-open` у элемента `body`
  */
-const removeBodyModalOpen = () => document.body.classList.add('modal-open');
+const removeBodyModalOpen = () => document.body.classList.remove('modal-open');
 
 
-export {isNoLongerThan, isEscPressed, setBodyModalOpen, removeBodyModalOpen};
+/**
+ * Ограничивает количество вызовов функции
+ * @param {function} callback Функция для ограничения вызовов
+ * @param {number} timeoutDelay Минимальный промежуток между вызовами функции
+ * @returns {function} Обработанная, ограниченная функция функция
+ */
+const debounce = (callback, timeoutDelay=500) => {
+  let timeoutId;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, args), timeoutDelay);
+  };
+};
+
+
+export {isNoLongerThan, isEscPressed, setBodyModalOpen, removeBodyModalOpen, debounce};

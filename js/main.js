@@ -1,6 +1,7 @@
 import {getPosts} from './data/api.js';
 import {Gallery} from './photos/gallery.js';
 import {UploadForm} from './upload/upload-form.js';
+import {PostFilter} from './post-filters/post-filter.js';
 
 
 const showGallery = () => {
@@ -8,6 +9,8 @@ const showGallery = () => {
     if (posts) {
       const gallery = new Gallery(posts);
       gallery.show().addEventListeners();
+      const postFilter = new PostFilter();
+      postFilter.show();
     }
   });
 };

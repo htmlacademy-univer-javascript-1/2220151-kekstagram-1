@@ -12,6 +12,9 @@ class PreviewsGallery {
     this.posts = posts;
     this.parent = document.querySelector('.pictures');
     this._setPostIndexes();
+    this.onFilterChange = this.onFilterChange.bind(this);
+    // this.clean = this.clean.bind(this);
+    // this.show = this.show.bind(this);
   }
 
   /**
@@ -19,16 +22,30 @@ class PreviewsGallery {
    */
   addEventListeners() {
     this.parent.addEventListener('click', this.onPreviewClick);
+    document.addEventListener('filterChange', this.onFilterChange);
+  }
+
+  onFilterChange(evt) {
+    this.show(evt.detail.postFilterFunction(this.posts));
   }
 
   /**
    * Отрисовывает миниатюры постов в элементе с классом `pictures`
    */
-  show() {
-    const html = this.posts
+  show(posts) {
+    this.tryClean(posts);
+    const html = (posts ? posts : this.posts)
       .map((post) => previewTemplate.withInserted(post))
       .join('');
     this.parent.insertAdjacentHTML('beforeend', html);
+  }
+
+  tryClean(posts) {
+    if (posts) {
+      const preserve = [this.parent.children[0], this.parent.children[1]];
+      this.parent.innerHTML = '';
+      preserve.forEach((el) => this.parent.appendChild(el));
+    }
   }
 
   /**

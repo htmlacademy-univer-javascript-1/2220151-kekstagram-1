@@ -69,6 +69,7 @@ class UploadForm {
     this.hide();
     this.removeEventListeners();
     this.reset();
+    removeBodyModalOpen();
   }
 
   /**
@@ -124,7 +125,6 @@ class UploadForm {
    */
   hide() {
     this.interface.overlay.classList.add('hidden');
-    removeBodyModalOpen();
   }
 
   /**
