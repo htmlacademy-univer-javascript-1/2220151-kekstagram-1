@@ -1,0 +1,217 @@
+import {HashtagValidator} from './hashtag-validator.js';
+import {rules} from './validation-rules.js';
+import {isEscPressed, setBodyModalOpen, removeBodyModalOpen} from '../util.js';
+import {Scaler} from './editing/scaler.js';
+import {Effector} from './editing/effector.js';
+import {publishPost} from '../data/api.js';
+import {Popup} from '../popup.js';
+
+
+const VALID_IMAGE_TYPES = ['image/gif', 'image/jpeg', 'image/png'];
+
+
+/**
+ * Класс формы загрузки изображения
+ */
+class UploadForm {
+  constructor() {
+    this.form = document.querySelector('.img-upload__form');
+    this._setInterface();
+    this._setInputs();
+    this._setImageEditors();
+    this._bindMethods();
+  }
+
+  //#region Управление событиями
+  /**
+   * Добавляет обработчик события открытия формы
+   */
+  addImageUploadEventListener() {
+    this.inputs.fileInput.addEventListener('change', this.onImageUpload);
+  }
+
+  /**
+   * Добавляет необходимые обработчики событий
+   */
+  addEventListeners() {
+    this.form.addEventListener('submit', this.onSubmit);
+    this.inputs.description.addEventListener('input', this.onDescriptionInput);
+    this.interface.closeBtn.addEventListener('click', this.onClose);
+    document.addEventListener('keydown', this.onFormKeydown);
+    this.imageScaler.addEventListeners();
+    this.imageEffector.setup();
+  }
+
+  /**
+   * Удаляет обработчики событий
+   */
+  removeEventListeners() {
+    this.form.removeEventListener('submit', this.onSubmit);
+    this.inputs.description.addEventListener('input', this.onDescriptionInput);
+    this.interface.closeBtn.removeEventListener('click', this.onClose);
+    document.removeEventListener('keydown', this.onFormKeydown);
+    this.imageScaler.removeEventListeners();
+    this.imageEffector.reset();
+  }
+  //#endregion
+
+  //#region Обработчики событий
+  /**
+   * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
+   */
+  onImageUpload() {
+    const file = this.checkFile();
+    if (file) {
+      this.show();
+      this.loadImagePreview(file);
+      this.addEventListeners();
+    }
+  }
+
+  checkFile() {
+    const file = this.inputs.fileInput.files[0];
+    if (VALID_IMAGE_TYPES.includes(file.type)) {
+      return file;
+    }
+    this.reset();
+    Popup.displayFail('Выбран файл не являющийся изображением!');
+  }
+
+  /**
+   * Прячет интерфейс формы и сбрасывает значение поля ввода изображения
+   */
+  onClose() {
+    this.hide();
+    this.removeEventListeners();
+    this.reset();
+    removeBodyModalOpen();
+  }
+
+  /**
+   * Обработчик события нажатия на клавижу в форме
+   * @param {Event} evt Объект события
+   */
+  onFormKeydown(evt) {
+    if (isEscPressed(evt) && document.activeElement !== this.inputs.description && !Popup.shown) {
+      this.onClose();
+    }
+  }
+
+  /**
+   * Обработчик события изменения содержимого поля ввода описания изображания
+   * @param {Event} evt объект события
+   */
+  onDescriptionInput(evt) {
+    const length = evt.target.value.length;
+    this.interface.descriptionLength.textContent = `${length}/140`;
+  }
+
+  /**
+   * Обработчик события отправки формы
+   * @param {Event} evt Объект события
+   */
+  onSubmit(evt) {
+    evt.preventDefault();
+    const isValid = this.validate();
+
+    if (isValid) {
+      publishPost(new FormData(this.form)).then((result) => {
+        if (result) {
+          this.hide();
+          this.reset();
+          this.removeEventListeners();
+        }
+      });
+    }
+  }
+  //#endregion
+
+  //#region Методы
+  /**
+   * Отрисовывает интерфейс формы
+   */
+  show() {
+    setBodyModalOpen();
+    this.interface.overlay.classList.remove('hidden');
+  }
+
+  /**
+   * Прячет интерфейс формы
+   */
+  hide() {
+    this.interface.overlay.classList.add('hidden');
+  }
+
+  /**
+   * Устанавливает предпросмотр загружаемого изображения
+   */
+  loadImagePreview(file) {
+    this.interface.preview.src = URL.createObjectURL(file);
+  }
+
+  reset() {
+    this.inputs.fileInput.value = '';
+    this.imageScaler.reset();
+    this.interface.descriptionLength.textContent = '0/140';
+  }
+
+  /**
+   * Проверяет форму на валидность
+   * @returns {Boolean} Форма валидна
+   */
+  validate() {
+    if (!this.validator) {
+      this.validator = new HashtagValidator(this.form, this.inputs.hashtagsInput, rules);
+    }
+    return this.validator.validate();
+  }
+  //#endregion
+
+
+  //#region Приватные метаметоды
+  /**
+   * Устанавливает поле объекта с полями ввода
+   */
+  _setInputs() {
+    this.inputs = {
+      hashtagsInput: this.form.querySelector('.text__hashtags'),
+      description: this.form.querySelector('.text__description'),
+      fileInput: this.form.querySelector('#upload-file')
+    };
+  }
+
+  /**
+   * Устанавливает поля класса с обработчиками фотографии
+   */
+  _setImageEditors() {
+    this.imageScaler = new Scaler(this.form, this.interface.preview);
+    this.imageEffector = new Effector(this.form, this.interface.preview);
+  }
+
+  /**
+   * Устанавливает поле объекта с необходимыми элементами интерфейса
+   */
+  _setInterface() {
+    this.interface = {
+      overlay: this.form.querySelector('.img-upload__overlay'),
+      closeBtn: this.form.querySelector('#upload-cancel'),
+      preview: this.form.querySelector('.img-upload__preview > img'),
+      descriptionLength: this.form.querySelector('.text__description-length')
+    };
+  }
+
+  /**
+   * Привязывает контексты методов к объекту данного класса
+   */
+  _bindMethods() {
+    this.onImageUpload = this.onImageUpload.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onFormKeydown = this.onFormKeydown.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onDescriptionInput = this.onDescriptionInput.bind(this);
+  }
+  //#endregion
+}
+
+
+export {UploadForm};
