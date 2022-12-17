@@ -69,6 +69,7 @@ class UploadForm {
     this.hide();
     this.removeEventListeners();
     this.reset();
+    removeBodyModalOpen();
   }
 
   /**
@@ -124,7 +125,6 @@ class UploadForm {
    */
   hide() {
     this.interface.overlay.classList.add('hidden');
-    removeBodyModalOpen();
   }
 
   /**
@@ -138,12 +138,6 @@ class UploadForm {
     this.inputs.fileInput.value = '';
     this.imageScaler.reset();
     this.interface.descriptionLength.textContent = '0/140';
-  }
-
-  /**
-   * Сбрасывает значение поля ввода загрузки изображения
-   */
-  resetFileInput() {
   }
 
   /**
