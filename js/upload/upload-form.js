@@ -7,6 +7,9 @@ import {publishPost} from '../data/api.js';
 import {Popup} from '../popup.js';
 
 
+const VALID_IMAGE_TYPES = ['image/gif', 'image/jpeg', 'image/png'];
+
+
 /**
  * Класс формы загрузки изображения
  */
@@ -57,9 +60,21 @@ class UploadForm {
    * Отображает форму, отрисовывает preview изображения и добавляет нужные обработчики событий
    */
   onImageUpload() {
-    this.show();
-    this.loadImagePreview();
-    this.addEventListeners();
+    const file = this.checkFile();
+    if (file) {
+      this.show();
+      this.loadImagePreview(file);
+      this.addEventListeners();
+    }
+  }
+
+  checkFile() {
+    const file = this.inputs.fileInput.files[0];
+    if (VALID_IMAGE_TYPES.includes(file.type)) {
+      return file;
+    }
+    this.reset();
+    Popup.displayFail('Выбран файл не являющийся изображением!');
   }
 
   /**
@@ -130,8 +145,8 @@ class UploadForm {
   /**
    * Устанавливает предпросмотр загружаемого изображения
    */
-  loadImagePreview() {
-    this.interface.preview.src = URL.createObjectURL(this.inputs.fileInput.files[0]);
+  loadImagePreview(file) {
+    this.interface.preview.src = URL.createObjectURL(file);
   }
 
   reset() {
