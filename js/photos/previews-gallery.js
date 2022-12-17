@@ -13,8 +13,6 @@ class PreviewsGallery {
     this.parent = document.querySelector('.pictures');
     this._setPostIndexes();
     this.onFilterChange = this.onFilterChange.bind(this);
-    // this.clean = this.clean.bind(this);
-    // this.show = this.show.bind(this);
   }
 
   /**
