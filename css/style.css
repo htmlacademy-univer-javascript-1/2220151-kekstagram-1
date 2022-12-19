@@ -1466,7 +1466,7 @@ main {
 .popup__wrapper {
   max-width: 800px;
   min-width: 600px;
-  padding: 10px 60px;
+  padding: 30px 60px;
   box-sizing: border-box;
   position: fixed;
   top: 70px;
@@ -1482,14 +1482,18 @@ main {
   background: #f04946;
 }
 
+.popup__heading {
+  margin: 0 0 1em;
+}
+
 .popup__text {
   text-transform: none;
+  margin: 0 0 1.6em;
 }
 
 .popup__ok {
   display: block;
   padding: 10px 40px;
-  margin: 0.67em 0;
   border-radius: 4px;
   border: 0;
   font-weight: 700;
